@@ -1,0 +1,66 @@
+import discord
+from config import game_list_path, token_path,add_game, remove_game, ping, show_game_list
+from utils import isUserAdmin, write_to_game_list_file
+
+# Discord client handling
+intents = discord.Intents.default()
+intents.message_content = True
+
+client = discord.Client(intents=intents)
+
+# Game list handling
+with open (game_list_path, "r") as game_list_file:
+    game_list = game_list_file.read().splitlines()
+
+# Token handling
+with open(token_path, "r") as token:
+    token = token.readline()
+    token = token.strip()
+
+# Input/Output logic
+@client.event
+async def on_ready():
+    print(f"Logged in as {client.user}")
+
+@client.event
+async def on_message(message):
+    if message.author == client.user:
+        return
+
+    if message.content == ping:
+        await message.channel.send("pong")
+
+    if message.content == show_game_list:
+        separator = "\n"
+        game_list_printable_format = separator.join(game_list)
+        await message.channel.send(game_list_printable_format)
+
+    if message.content.startswith(add_game):
+        if isUserAdmin(message.author.id) == False:
+            await message.channel.send("You are not an administrator, you can't add or remove games from the game list.")
+        else:
+            command_length = len(add_game) + 1
+            message_suffix = message.content[command_length:]
+            if message_suffix in game_list:
+                await message.channel.send(f"Error: Game {message_suffix} cannot be added to game list, {message_suffix} is already in game list.")
+            else:
+                game_list.append(message_suffix)
+                write_to_game_list_file(game_list)
+                await message.channel.send(f"{message_suffix} has been added to the game list")
+                print(f"{message_suffix} has been added to the game list file.")
+
+    if message.content.startswith(remove_game):
+        if isUserAdmin(message.author.id) == False:
+            await message.channel.send("You are not an administrator, you can't add or remove games from the game list.")
+        else:
+            command_length = len(remove_game) + 1
+            message_suffix = message.content[command_length:]
+            if message_suffix not in game_list:
+                await message.channel.send(f"Error: Game {message_suffix} cannot be removed from game list, {message_suffix} is not in game list")
+            else:
+                game_list.remove(message_suffix)
+                write_to_game_list_file(game_list)
+                await message.channel.send(f"{message_suffix} has been removed from the game list")
+                print(f"{message_suffix} has been removed from the game list file.")
+
+client.run(token)

@@ -1,0 +1,4 @@
+.venv
+bot/.token
+bot/.userid
+bot/__pycache__
