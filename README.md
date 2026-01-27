@@ -21,8 +21,8 @@ favorite game list for a Discord server using text commands.
 - Backed by a JSON file
 
 ## Milestones
-1. Bot connects and responds
-2. Static game list
-3. File-backed storage
-4. Add/remove commands
-5. Single editable message
+- [x] Bot connects and responds
+- [x] Static game list
+- [x] File-backed storage
+- [x] Add/remove commands
+- [x] Single editable message
