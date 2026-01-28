@@ -16,3 +16,9 @@ def isUserAdmin (user_id):
             return False
         if user_id == user_id_file:
             return True
+
+def getHelpCommand(commands):
+    lines = []
+    for command_data in commands.values():
+        lines.append(f"### {command_data['command']}\n  Description: {command_data['description']}\n  Usage: `{command_data['usage']}`")
+    return "\n".join(lines)

@@ -26,3 +26,4 @@ favorite game list for a Discord server using text commands.
 - [x] File-backed storage
 - [x] Add/remove commands
 - [x] Single editable message
+- [ ] JSON storage with Wikipedia and Steam links for each game
