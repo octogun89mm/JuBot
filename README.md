@@ -12,9 +12,11 @@ favorite game list for a Discord server using text commands.
 - No web UI
 
 ## Commands
-- !games -> show game list
-- !add <game> -> add a game to the game list
-- !remove <game> -> remove a game from the game list
+- !ping -> test if the bot responds
+- !jujusgames -> show game list
+- !jujusgamesadd <game> -> add a game to the game list
+- !jujusgamesremove <game> -> remove a game from the game list
+- !jubothelp -> show available commands
 
 ## Data
 - Stored as a simple list of strings
