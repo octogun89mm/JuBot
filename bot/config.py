@@ -7,7 +7,7 @@ user_id_path = os.path.join(script_dir, ".userid")
 game_list_path = os.path.join(script_dir, "game_list.txt")
 
 # Dictionary implementation for commands
-commands = {
+commands_dict = {
     "ping" : {
         "command" : "!ping",
         "description" : "Test if the bot responds.",

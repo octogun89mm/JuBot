@@ -12,10 +12,7 @@ def isUserAdmin (user_id):
         user_id_file = user_id_file.readline()
         user_id_file = user_id_file.strip()
         user_id = str(user_id)
-        if user_id != user_id_file:
-            return False
-        if user_id == user_id_file:
-            return True
+        return user_id == user_id_file
 
 def getHelpCommand(commands):
     lines = []
