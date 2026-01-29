@@ -22,3 +22,10 @@ def getHelpCommand(commands):
     for command_data in commands.values():
         lines.append(f"### {command_data['command']}\n  Description: {command_data['description']}\n  Usage: `{command_data['usage']}`")
     return "\n".join(lines)
+
+def isValidGameName(message_suffix):
+    message_suffix = message_suffix.strip()
+    if not message_suffix:
+        return False
+    else:
+        return True
