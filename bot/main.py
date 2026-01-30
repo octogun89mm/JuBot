@@ -35,7 +35,8 @@ async def ping(ctx):
     Check if the bot responds.
     Usage: !ping
     """
-    await ctx.send("pong")
+    latency = round(bot.latency * 1000)
+    await ctx.send(f"Pong! Latency: {latency}ms")
 
 @bot.command(name="jujusgames")
 async def get_game_list(ctx):
