@@ -1,7 +1,7 @@
 import discord
 from discord.ext import commands
-from config import game_list_path, token_path, commands_dict
-from utils import isUserAdmin, isValidGameName, write_to_game_list_file, getHelpCommand
+from config import game_list_path, token_path
+from utils import is_user_admin, write_to_game_list_file
 
 # Discord client handling
 intents = discord.Intents.default()
@@ -19,28 +19,47 @@ with open(token_path, "r") as token:
 
 # Autorization Logic
 def check_admin(ctx):
-    return isUserAdmin(ctx.author.id)
+    return is_user_admin(ctx.author.id)
 
 # Logic
 @bot.event
 async def on_ready():
     print(f"Logged in as {bot.user}")
 
-# TODO: Add an help description for each command, see https://discordpy-reborn.readthedocs.io/en/latest/ext/commands/api.html#discord.ext.commands.Bot.description
-
+# TODO: Add the time in MS of how much time it takes for the bot to respond in the ping function.
 @bot.command()
 async def ping(ctx):
+    """
+    Check if the bot responds.
+
+    Check if the bot responds.
+    Usage: !ping
+    """
     await ctx.send("pong")
 
 @bot.command(name="jujusgames")
-async def getGameList(ctx):
+async def get_game_list(ctx):
+    """
+    Show a list of all the games that Juju plays!
+
+    Show a list of all the games that Juju plays!
+    Usage: !jujusgames
+    """
     separator = "\n"
     game_list_printable_format = separator.join(game_list)
     await ctx.send(game_list_printable_format)
 
 @bot.command(name="jujusgamesadd")
 @commands.check(check_admin)
-async def addToGameList(ctx, game):
+async def add_to_game_list(ctx, game):
+    """
+    Add a game to the game list. (Admins only)
+
+    Add a game to the game list. (Admins only)
+    The game must be written in double quotes, see usage and/or example for more information.
+    Usage: !jujusgamesadd "<game_title>"
+    Example: !jujusgamesadd "GTA V"
+    """
     if game in game_list:
         await ctx.send(f"{game} is already in game list. It cannot be added.")
     else:
@@ -51,7 +70,15 @@ async def addToGameList(ctx, game):
 
 @bot.command(name="jujusgamesremove")
 @commands.check(check_admin)
-async def removeFromGameList(ctx, game):
+async def remove_from_game_list(ctx, game):
+    """
+    Remove a game from the game list. (Admins only)
+
+    Remove a game from the game list. (Admins only)
+    The game must be written in double quotes, see usage and/or example for more information.
+    Usage: !jujusgamesremove "<game_title>"
+    Example: !jujusgamesremove "GTA V"
+    """
     if game not in game_list:
         await ctx.send(f"{game} is not in game list. It cannot be removed.")
     else:
