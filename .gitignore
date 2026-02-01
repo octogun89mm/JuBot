@@ -1,8 +1,6 @@
 .venv
-bot/.token
-bot/.userid
+.env
+.claude
+CLAUDE.md
 bot/__pycache__
 bot/game_list.txt
-.env
-CLAUDE.md
-.claude
