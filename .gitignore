@@ -3,3 +3,6 @@ bot/.token
 bot/.userid
 bot/__pycache__
 bot/game_list.txt
+.env
+CLAUDE.md
+.claude

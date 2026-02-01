@@ -1,32 +1,43 @@
 import discord
 from discord.ext import commands
-from config import game_list_path, token_path
-from utils import is_user_admin, write_to_game_list_file
+from dotenv import load_dotenv
+import os
+
+from config import game_list_path
+from utils import write_to_game_list_file
+
+load_dotenv()
+
+# Configuration
+DISCORD_TOKEN = os.environ.get("DISCORD_TOKEN")
+if not DISCORD_TOKEN:
+    raise ValueError("DISCORD_TOKEN environment variable not set")
+
+ADMIN_ROLE_ID = os.environ.get("ADMIN_ROLE_ID")
+if not ADMIN_ROLE_ID:
+    raise ValueError("ADMIN_ROLE_ID environment variable not set")
+ADMIN_ROLE_ID = int(ADMIN_ROLE_ID)
+
 
 # Discord client handling
 intents = discord.Intents.default()
 intents.message_content = True
+intents.members = True
 bot = commands.Bot(command_prefix="!", intents=intents)
 
 # Game list handling
-with open (game_list_path, "r") as game_list_file:
+with open(game_list_path, "r") as game_list_file:
     game_list = game_list_file.read().splitlines()
-
-# Token handling
-with open(token_path, "r") as token:
-    token = token.readline()
-    token = token.strip()
 
 # Autorization Logic
 def check_admin(ctx):
-    return is_user_admin(ctx.author.id)
+    return any(role.id == ADMIN_ROLE_ID for role in ctx.author.roles)
 
 # Logic
 @bot.event
 async def on_ready():
     print(f"Logged in as {bot.user}")
 
-# TODO: Add the time in MS of how much time it takes for the bot to respond in the ping function.
 @bot.command()
 async def ping(ctx):
     """
@@ -88,4 +99,4 @@ async def remove_from_game_list(ctx, game):
         await ctx.send(f"{game} has been removed from game list!")
         print(f"{game} has been removed from game list by {ctx.author.id}")
 
-bot.run(token)
+bot.run(DISCORD_TOKEN)
