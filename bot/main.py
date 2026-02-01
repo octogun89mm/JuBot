@@ -33,11 +33,22 @@ with open(game_list_path, "r") as game_list_file:
 def check_admin(ctx):
     return any(role.id == ADMIN_ROLE_ID for role in ctx.author.roles)
 
-# Logic
+# Event handling
 @bot.event
 async def on_ready():
     print(f"Logged in as {bot.user}")
 
+# Error handling
+@bot.event
+async def on_command_error(ctx, error):
+    if isinstance(error, commands.CheckFailure):
+        await ctx.send(f"{ctx.author.display_name}, only admins are allowed to use this command")
+    elif isinstance(error, commands.MissingRequiredArgument):
+        await ctx.send(f"{ctx.author.display_name}, some arguments are missing.\nIn this case `{error.param}`, for the command to run properly.\nPlease type `!help` for more information.")
+    else:
+        print(f"Unhandled error: {type(error).__name__}: {error}")
+
+# Command handling
 @bot.command()
 async def ping(ctx):
     """
