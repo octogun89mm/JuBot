@@ -14,9 +14,9 @@ favorite game list for a Discord server using text commands.
 ## Commands
 - !ping -> test if the bot responds
 - !jujusgames -> show game list
-- !jujusgamesadd <game> -> add a game to the game list
-- !jujusgamesremove <game> -> remove a game from the game list
-- !jubothelp -> show available commands
+- !jujusgames add "<game>" -> add a game to the game list (admin only)
+- !jujusgames remove "<game>" -> remove a game from the game list (admin only)
+- !help -> show available commands
 
 ## Data
 - Stored as a simple list of strings
@@ -30,3 +30,4 @@ favorite game list for a Discord server using text commands.
 - [x] Single editable message
 - [ ] JSON storage with Wikipedia and Steam links for each game
 - [ ] Game suggestion command for users to suggest games (stored in a separate file)
+- [x] Subcommands to replace jujusgamesadd and jujusgamesremove (e.g. !jujusgames add, !jujusgames remove)
