@@ -1,10 +1,8 @@
 import discord
+import os
 from discord.ext import commands
 from dotenv import load_dotenv
-import os
-
-from config import game_list_path
-from utils import write_to_game_list_file
+from utils import write_to_game_list_file, read_from_game_list_file
 
 load_dotenv()
 
@@ -18,16 +16,11 @@ if not ADMIN_ROLE_ID:
     raise ValueError("ADMIN_ROLE_ID environment variable not set")
 ADMIN_ROLE_ID = int(ADMIN_ROLE_ID)
 
-
 # Discord client handling
 intents = discord.Intents.default()
 intents.message_content = True
 intents.members = True
 bot = commands.Bot(command_prefix="!", intents=intents)
-
-# Game list handling
-with open(game_list_path, "r") as game_list_file:
-    game_list = game_list_file.read().splitlines()
 
 # Autorization Logic
 def check_admin(ctx):
@@ -70,9 +63,8 @@ async def jujusgames(ctx):
 
     Subcommands: `add` and `remove`
     """
-    separator = "\n"
-    game_list_printable_format = separator.join(game_list)
-    await ctx.send(game_list_printable_format)
+    game_names = [game_item["name"] for game_item in read_from_game_list_file()]
+    await ctx.send("\n".join(game_names))
 
 @jujusgames.command(name="add")
 @commands.check(check_admin)
@@ -85,13 +77,14 @@ async def add_to_game_list(ctx, game):
     Usage: !jujusgames add "<game_title>"
     Example: !jujusgames add "GTA V"
     """
-    if game in game_list:
+    if game in [game_item["name"] for game_item in read_from_game_list_file()]:
         await ctx.send(f"{game} is already in game list. It cannot be added.")
     else:
-        game_list.append(game)
+        game_list = read_from_game_list_file()
+        game_list.append({"name": game})
         write_to_game_list_file(game_list)
         await ctx.send(f"{game} has been added to game list!")
-        print(f"{game} has been added to game list by {ctx.author.id}")
+        print(f"{game} has been added to game list by {ctx.author.name} - {ctx.author.id}")
 
 @jujusgames.command(name="remove")
 @commands.check(check_admin)
@@ -104,12 +97,12 @@ async def remove_from_game_list(ctx, game):
     Usage: !jujusgames remove "<game_title>"
     Example: !jujusgames remove "GTA V"
     """
-    if game not in game_list:
+    if game not in [game_item["name"] for game_item in read_from_game_list_file()]:
         await ctx.send(f"{game} is not in game list. It cannot be removed.")
     else:
-        game_list.remove(game)
-        write_to_game_list_file(game_list)
+        new_game_list = [game_item for game_item in read_from_game_list_file() if game_item["name"] != game]
+        write_to_game_list_file(new_game_list)
         await ctx.send(f"{game} has been removed from game list!")
-        print(f"{game} has been removed from game list by {ctx.author.id}")
+        print(f"{game} has been removed from game list by {ctx.author.name} - {ctx.author.id}")
 
 bot.run(DISCORD_TOKEN)

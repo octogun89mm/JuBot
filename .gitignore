@@ -3,4 +3,4 @@
 .claude
 CLAUDE.md
 bot/__pycache__
-bot/game_list.txt
+bot/game_list.json
