@@ -42,7 +42,7 @@ async def on_ready():
 @bot.event
 async def on_command_error(ctx, error):
     if isinstance(error, commands.CheckFailure):
-        await ctx.send(f"{ctx.author.display_name}, only admins are allowed to use this command")
+        await ctx.send(f"{ctx.author.display_name}, only admins are allowed to use this command.")
     elif isinstance(error, commands.MissingRequiredArgument):
         await ctx.send(f"{ctx.author.display_name}, some arguments are missing.\nIn this case `{error.param}`, for the command to run properly.\nPlease type `!help` for more information.")
     else:
@@ -60,19 +60,21 @@ async def ping(ctx):
     latency = round(bot.latency * 1000)
     await ctx.send(f"Pong! Latency: {latency}ms")
 
-@bot.command(name="jujusgames")
-async def get_game_list(ctx):
+@bot.group(name="jujusgames", invoke_without_command=True)
+async def jujusgames(ctx):
     """
-    Show a list of all the games that Juju plays!
+    Show a list of all the games that Juju plays! Also contains sub commands, see `!help` for more info.
 
     Show a list of all the games that Juju plays!
     Usage: !jujusgames
+
+    Subcommands: `add` and `remove`
     """
     separator = "\n"
     game_list_printable_format = separator.join(game_list)
     await ctx.send(game_list_printable_format)
 
-@bot.command(name="jujusgamesadd")
+@jujusgames.command(name="add")
 @commands.check(check_admin)
 async def add_to_game_list(ctx, game):
     """
@@ -80,8 +82,8 @@ async def add_to_game_list(ctx, game):
 
     Add a game to the game list. (Admins only)
     The game must be written in double quotes, see usage and/or example for more information.
-    Usage: !jujusgamesadd "<game_title>"
-    Example: !jujusgamesadd "GTA V"
+    Usage: !jujusgames add "<game_title>"
+    Example: !jujusgames add "GTA V"
     """
     if game in game_list:
         await ctx.send(f"{game} is already in game list. It cannot be added.")
@@ -91,7 +93,7 @@ async def add_to_game_list(ctx, game):
         await ctx.send(f"{game} has been added to game list!")
         print(f"{game} has been added to game list by {ctx.author.id}")
 
-@bot.command(name="jujusgamesremove")
+@jujusgames.command(name="remove")
 @commands.check(check_admin)
 async def remove_from_game_list(ctx, game):
     """
@@ -99,8 +101,8 @@ async def remove_from_game_list(ctx, game):
 
     Remove a game from the game list. (Admins only)
     The game must be written in double quotes, see usage and/or example for more information.
-    Usage: !jujusgamesremove "<game_title>"
-    Example: !jujusgamesremove "GTA V"
+    Usage: !jujusgames remove "<game_title>"
+    Example: !jujusgames remove "GTA V"
     """
     if game not in game_list:
         await ctx.send(f"{game} is not in game list. It cannot be removed.")
