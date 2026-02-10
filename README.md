@@ -29,6 +29,6 @@ favorite game list for a Discord server using text commands.
 - [x] Add/remove commands
 - [x] Single editable message
 - [x] JSON storage
+- [x] Subcommands to replace jujusgamesadd and jujusgamesremove (e.g. !jujusgames add, !jujusgames remove)
 - [ ] Add Wikipedia and Steam links for each game
 - [ ] Game suggestion command for users to suggest games (stored in a separate file)
-- [x] Subcommands to replace jujusgamesadd and jujusgamesremove (e.g. !jujusgames add, !jujusgames remove)
