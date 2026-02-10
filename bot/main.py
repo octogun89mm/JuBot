@@ -73,10 +73,15 @@ async def jujusgames(ctx):
 
     Subcommands: `add` and `remove`
     """  # noqa: E501
-    game_names = [game_item["name"] for game_item in read_from_game_list_file()]
-    await ctx.send("\n".join(game_names))
+    game_data = read_from_game_list_file()
+    formatted_games = []
+    for _, details in game_data.items():
+        game_info = f"{details['name']}\n{details['steam_link']}"
+        formatted_games.append(game_info)
+    await ctx.send("\n\n".join(formatted_games))
 
 
+# TODO: Add steam API to the function
 @jujusgames.command(name="add")
 @commands.check(check_admin)
 async def add_to_game_list(ctx, game):
@@ -88,7 +93,8 @@ async def add_to_game_list(ctx, game):
     Usage: !jujusgames add "<game_title>"
     Example: !jujusgames add "GTA V"
     """  # noqa: E501
-    if game in [game_item["name"] for game_item in read_from_game_list_file()]:
+    game_data = read_from_game_list_file()
+    if steam_id in game_data:
         await ctx.send(f"{game} is already in game list. It cannot be added.")
     else:
         game_list = read_from_game_list_file()
