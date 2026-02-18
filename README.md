@@ -12,12 +12,12 @@ favorite game list for a Discord server using text commands.
 - No web UI
 
 ## Commands
-- >>ping -> test if the bot responds
-- >>jujusgames -> show game list
-- >>jujusgames add <steam_id> -> add a game by Steam app id (admin only)
-- >>jujusgames add "<game_name>" -> search Steam by name, then add (admin only)
-- >>jujusgames remove <steam_id> -> remove a game by Steam app id (admin only)
-- >>help -> show available commands
+- `>>ping` -> test if the bot responds
+- `>>jujusgames` -> show game list
+- `>>jujusgames add <steam_id>` -> add a game by Steam app id (admin only)
+- `>>jujusgames add "<game_name>"` -> search Steam by name, then add (admin only)
+- `>>jujusgames remove <steam_id>` -> remove a game by Steam app id (admin only)
+- `>>help` -> show available commands
 
 ## Data
 - Stored as a dictionary keyed by Steam app id (string key)
@@ -33,6 +33,6 @@ favorite game list for a Discord server using text commands.
 - [x] Add/remove commands
 - [x] Single editable message
 - [x] JSON storage
-- [x] Subcommands to replace jujusgamesadd and jujusgamesremove (e.g. >>jujusgames add, >>jujusgames remove)
+- [x] Subcommands to replace jujusgamesadd and jujusgamesremove (e.g. `>>jujusgames add`, `>>jujusgames remove`)
 - [x] Add Steam links for each game
 - [ ] Game suggestion command for users to suggest games (stored in a separate file)
