@@ -5,3 +5,4 @@ CLAUDE.md
 QWEN.md
 bot/__pycache__
 bot/game_list.json
+bot/suggestions.json
