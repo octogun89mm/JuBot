@@ -1,7 +1,7 @@
-import requests
+import aiohttp
 
 
-def get_game_by_steam_id(steam_id):
+async def get_game_by_steam_id(steam_id):
     """
     Fetch a game's basic info from Steam Store API by app id.
 
@@ -12,10 +12,11 @@ def get_game_by_steam_id(steam_id):
     url = f"https://store.steampowered.com/api/appdetails?appids={steam_id}"
 
     try:
-        response = requests.get(url, timeout=10)
-        response.raise_for_status()
-        payload = response.json()
-    except (requests.RequestException, ValueError):
+        async with aiohttp.ClientSession() as session:
+            async with session.get(url, timeout=aiohttp.ClientTimeout(total=10)) as response:
+                response.raise_for_status()
+                payload = await response.json()
+    except Exception:
         return None
 
     app_entry = payload.get(str(steam_id))
@@ -33,7 +34,7 @@ def get_game_by_steam_id(steam_id):
     }
 
 
-def search_games_by_name(query, limit=5):
+async def search_games_by_name(query, limit=5):
     """
     Search Steam Store for games by title.
 
@@ -49,10 +50,11 @@ def search_games_by_name(query, limit=5):
     }
 
     try:
-        response = requests.get(url, params=params, timeout=10)
-        response.raise_for_status()
-        payload = response.json()
-    except (requests.RequestException, ValueError):
+        async with aiohttp.ClientSession() as session:
+            async with session.get(url, params=params, timeout=aiohttp.ClientTimeout(total=10)) as response:
+                response.raise_for_status()
+                payload = await response.json()
+    except Exception:
         return []
 
     items = payload.get("items", [])

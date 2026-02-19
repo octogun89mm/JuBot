@@ -48,8 +48,7 @@ intents = discord.Intents.default()
 intents.message_content = True
 intents.members = True
 bot = commands.Bot(command_prefix=">>", intents=intents)
-pending_add_selections = {}
-pending_suggest_selections = {}
+pending_selections = {}
 
 
 # Authorization Logic
@@ -123,7 +122,7 @@ async def suggest_game(ctx, *, game_name):
 
     if cleaned_name.isdigit():
         steam_id = int(cleaned_name)
-        game_info = get_game_by_steam_id(steam_id)
+        game_info = await get_game_by_steam_id(steam_id)
         if not game_info:
             await ctx.send(
                 f"Could not find game info for Steam app id {steam_id}. Please check the id and try again."
@@ -135,7 +134,7 @@ async def suggest_game(ctx, *, game_name):
             "steam_link": game_info["steam_link"],
         }
     else:
-        results = search_games_by_name(cleaned_name, limit=5)
+        results = await search_games_by_name(cleaned_name, limit=5)
         if not results:
             await ctx.send(
                 f"No Steam results found for '{cleaned_name}'. Try a different name."
@@ -146,11 +145,12 @@ async def suggest_game(ctx, *, game_name):
             selected_game = results[0]
         else:
             pending_key = (
+                "suggest",
                 ctx.guild.id if ctx.guild else 0,
                 ctx.channel.id,
                 ctx.author.id,
             )
-            if pending_key in pending_suggest_selections:
+            if pending_key in pending_selections:
                 await ctx.send(
                     "You already have a pending suggestion selection in this channel. Reply with a number or 'cancel'."
                 )
@@ -163,7 +163,7 @@ async def suggest_game(ctx, *, game_name):
                 lines.append(f"{index}. {item['name']} (App ID: {item['steam_id']})")
             await ctx.send("\n".join(lines))
 
-            pending_suggest_selections[pending_key] = True
+            pending_selections[pending_key] = True
 
             def selection_check(message):
                 if message.author.id != ctx.author.id:
@@ -186,7 +186,7 @@ async def suggest_game(ctx, *, game_name):
                 )
                 return
             finally:
-                pending_suggest_selections.pop(pending_key, None)
+                pending_selections.pop(pending_key, None)
 
             content = reply.content.strip().lower()
             if content == "cancel":
@@ -294,6 +294,9 @@ async def jujusgames(ctx):
     Subcommands: `add` and `remove`
     """  # noqa: E501
     game_data = read_from_game_list_file()
+    if not game_data:
+        await ctx.send("No games in the list yet.")
+        return
     formatted_games = []
     for _, details in game_data.items():
         game_info = f"{details['name']}\n{details['steam_link']}"
@@ -310,7 +313,7 @@ async def add_game_by_steam_id(ctx, steam_id):
         )
         return
 
-    game_info = get_game_by_steam_id(steam_id)
+    game_info = await get_game_by_steam_id(steam_id)
     if not game_info:
         await ctx.send(
             f"Could not find game info for Steam app id {steam_id}. Please check the id and try again."
@@ -347,7 +350,7 @@ async def add_to_game_list(ctx, *, game_query):
         await add_game_by_steam_id(ctx, int(cleaned_query))
         return
 
-    results = search_games_by_name(cleaned_query, limit=5)
+    results = await search_games_by_name(cleaned_query, limit=5)
     if not results:
         await ctx.send(
             f"No Steam results found for '{cleaned_query}'. Try a different name or use a Steam app id."
@@ -358,8 +361,8 @@ async def add_to_game_list(ctx, *, game_query):
         await add_game_by_steam_id(ctx, results[0]["steam_id"])
         return
 
-    pending_key = (ctx.guild.id if ctx.guild else 0, ctx.channel.id, ctx.author.id)
-    if pending_key in pending_add_selections:
+    pending_key = ("add", ctx.guild.id if ctx.guild else 0, ctx.channel.id, ctx.author.id)
+    if pending_key in pending_selections:
         await ctx.send(
             "You already have a pending game selection in this channel. Reply with a number or 'cancel'."
         )
@@ -372,7 +375,7 @@ async def add_to_game_list(ctx, *, game_query):
         lines.append(f"{index}. {item['name']} (App ID: {item['steam_id']})")
     await ctx.send("\n".join(lines))
 
-    pending_add_selections[pending_key] = True
+    pending_selections[pending_key] = True
 
     def selection_check(message):
         if message.author.id != ctx.author.id:
@@ -393,7 +396,7 @@ async def add_to_game_list(ctx, *, game_query):
         await ctx.send("Selection timed out after 30 seconds. Run the command again.")
         return
     finally:
-        pending_add_selections.pop(pending_key, None)
+        pending_selections.pop(pending_key, None)
 
     content = reply.content.strip().lower()
     if content == "cancel":

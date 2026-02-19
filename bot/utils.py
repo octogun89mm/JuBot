@@ -9,9 +9,14 @@ def write_to_game_list_file(game_list):
 
 
 def read_from_game_list_file():
-    with open(game_list_path, "r") as game_list_file:
-        game_list = json.load(game_list_file)
-    return game_list
+    try:
+        with open(game_list_path, "r") as game_list_file:
+            game_list = json.load(game_list_file)
+    except (FileNotFoundError, json.JSONDecodeError):
+        return {}
+    if isinstance(game_list, dict):
+        return game_list
+    return {}
 
 
 def write_to_suggestions_file(suggestions):
