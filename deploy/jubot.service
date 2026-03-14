@@ -1,0 +1,17 @@
+[Unit]
+Description=JuBot Discord Bot
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=jubot
+Group=jubot
+WorkingDirectory=/opt/jubot
+ExecStart=/opt/jubot/.venv/bin/python bot/main.py
+EnvironmentFile=/opt/jubot/.env
+Restart=on-failure
+RestartSec=10
+
+[Install]
+WantedBy=multi-user.target
