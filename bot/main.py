@@ -43,6 +43,12 @@ except ValueError as error:
 if not ALLOWED_CHANNEL_IDS:
     raise ValueError("ALLOWED_CHANNEL_IDS must contain at least one channel id")
 
+WELCOME_CHANNEL_ID_RAW = os.environ.get("WELCOME_CHANNEL_ID", "1406518392541810731")
+try:
+    WELCOME_CHANNEL_ID = int(WELCOME_CHANNEL_ID_RAW)
+except ValueError as error:
+    raise ValueError("WELCOME_CHANNEL_ID must be an integer") from error
+
 # Discord client handling
 intents = discord.Intents.default()
 intents.message_content = True
@@ -71,6 +77,23 @@ async def check_allowed_channel(ctx):
 @bot.event
 async def on_ready():
     print(f"Logged in as {bot.user}")
+
+
+@bot.event
+async def on_member_join(member):
+    channel = bot.get_channel(WELCOME_CHANNEL_ID)
+    if channel is None:
+        try:
+            channel = await bot.fetch_channel(WELCOME_CHANNEL_ID)
+        except (discord.NotFound, discord.Forbidden, discord.HTTPException):
+            print(
+                f"Welcome channel {WELCOME_CHANNEL_ID} not found, skipping welcome for {member}"
+            )
+            return
+
+    await channel.send(
+        f"Welcome to the server, {member.mention}! We're glad to have you here!"
+    )
 
 
 # Error handling

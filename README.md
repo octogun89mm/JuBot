@@ -19,6 +19,7 @@ favorite game list for a Discord server using text commands.
    - `DISCORD_TOKEN=<your_discord_bot_token>`
    - `ADMIN_ROLE_ID=<admin_role_id>`
    - `ALLOWED_CHANNEL_IDS=<channel_id_1>,<channel_id_2>`
+   - `WELCOME_CHANNEL_ID=1406518392541810731`
 5. Run the bot with `python bot/main.py`.
 
 ## Commands
@@ -32,6 +33,11 @@ favorite game list for a Discord server using text commands.
 - `>>jujusgames add "<game_name>"` -> search Steam by name, then add (admin only)
 - `>>jujusgames remove <steam_id>` -> remove a game by Steam app id (admin only)
 - `>>help` -> show available commands
+
+## Welcome Message
+- When a new member joins, the bot sends a welcome message in the channel set by `WELCOME_CHANNEL_ID`.
+- If `WELCOME_CHANNEL_ID` is omitted, the bot defaults to `1406518392541810731`.
+- The bot must have `Send Messages` permission in that channel, and the Discord application must have Server Members Intent enabled.
 
 ## Data
 - Stored as a dictionary keyed by Steam app id (string key)
