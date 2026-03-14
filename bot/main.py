@@ -87,6 +87,8 @@ async def on_command_error(ctx, error):
         await ctx.send(
             f"{ctx.author.display_name}, only admins are allowed to use this command."
         )
+    elif isinstance(error, commands.CommandNotFound):
+        pass
     elif isinstance(error, commands.MissingRequiredArgument):
         await ctx.send(
             f"{ctx.author.display_name}, some arguments are missing.\nIn this case `{error.param}`, for the command to run properly.\nPlease type `>>help` for more information."  # noqa: E501
